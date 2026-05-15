@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class NotificationClient {
     private final WebClient webClient;
-    private final String BASE_URL = "http://localhost:8086/api/notificaciones";
+    private final String BASE_URL = "http://localhost:8089/api/notificaciones";
 
     public void enviarAlertaStockCritico(NotificationRequest request, String token) {
         try {
