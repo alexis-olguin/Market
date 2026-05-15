@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductClient {
     private final WebClient webClient;
-    private final String BASE_URL = "http://localhost:8082/api/productos/";
+    private final String BASE_URL = "http://localhost:8081/api/productos/";
 
     public Object obtenerProducto(Long id, String token) {
         ApiResponse<Object> response = webClient.get()
