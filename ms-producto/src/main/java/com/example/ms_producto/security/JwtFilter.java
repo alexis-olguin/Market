@@ -44,15 +44,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
-                    log.info("Usuario autenticado",
+                    log.info("Usuario autenticado en ms-producto",
                             keyValue("user", user),
                             keyValue("role", role)
                     );
                 } else {
-                    log.warn("Token inválido");
+                    log.warn("Token inválido en ms-producto");
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     res.setContentType("application/json");
-                    res.getWriter().write("{\"success\":false,\"message\":\"Token inválido\"}");
+                    res.getWriter().write("{\"success\":false,\"message\":\"Token inválido o expirado\"}");
                     return;
                 }
             }

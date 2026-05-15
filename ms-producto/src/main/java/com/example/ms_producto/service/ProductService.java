@@ -20,34 +20,34 @@ public class ProductService {
     private final ConfigurationClient configClient;
 
     public Product crear(ProductDTO dto, String token) {
-        log.info("Crear producto", keyValue("nombre", dto.getName()));
+        log.info("Intentando crear producto", keyValue("nombre", dto.getName()));
 
-        // Validar categoría en configuration-service
+        // Validar categoría en configuration-service (puerto 8090)
         if (!configClient.isCategoryActive(dto.getCategoryId(), token)) {
-            throw new RuntimeException("La categoría no existe o no está activa");
+            log.error("Categoría inválida o inactiva", keyValue("categoryId", dto.getCategoryId()));
+            throw new RuntimeException("La categoría no existe o no está activa en ms-configuracion");
         }
 
-        Product p = new Product(null, dto.getName(), dto.getPrice(), dto.getCategoryId(), dto.isActive());
+        Product p = new Product(null, dto.getName(), dto.getDescription(), dto.getPrice(), 
+                                dto.getCategoryId(), dto.getTaxId(), dto.isActive());
         return repo.save(p);
     }
 
     public List<Product> listar() {
-        log.info("Listar productos");
+        log.info("Listando productos");
         return repo.findAll();
     }
 
     public Product obtener(Long id) {
-        log.info("Obtener producto", keyValue("id", id));
+        log.info("Obteniendo producto", keyValue("id", id));
         return repo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
     }
 
     public Product actualizar(Long id, ProductDTO dto, String token) {
-        log.info("Actualizar producto", keyValue("id", id));
-
+        log.info("Actualizando producto", keyValue("id", id));
         Product p = obtener(id);
 
-        // Validar categoría si cambió
         if (!p.getCategoryId().equals(dto.getCategoryId())) {
             if (!configClient.isCategoryActive(dto.getCategoryId(), token)) {
                 throw new RuntimeException("La nueva categoría no existe o no está activa");
@@ -55,15 +55,17 @@ public class ProductService {
         }
 
         p.setName(dto.getName());
+        p.setDescription(dto.getDescription());
         p.setPrice(dto.getPrice());
         p.setCategoryId(dto.getCategoryId());
+        p.setTaxId(dto.getTaxId());
         p.setActive(dto.isActive());
 
         return repo.save(p);
     }
 
     public void desactivar(Long id) {
-        log.warn("Desactivar producto", keyValue("id", id));
+        log.warn("Desactivación lógica de producto", keyValue("id", id));
         Product p = obtener(id);
         p.setActive(false);
         repo.save(p);

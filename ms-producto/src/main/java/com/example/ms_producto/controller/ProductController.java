@@ -26,7 +26,7 @@ public class ProductController {
         return ResponseEntity.status(201).body(
                 ApiResponse.<Product>builder()
                         .success(true)
-                        .message("Producto creado")
+                        .message("Producto creado exitosamente")
                         .data(product)
                         .build()
         );
@@ -50,7 +50,7 @@ public class ProductController {
         return ResponseEntity.ok(
                 ApiResponse.<Product>builder()
                         .success(true)
-                        .message("Producto obtenido")
+                        .message("Producto encontrado")
                         .data(service.obtener(id))
                         .build()
         );
@@ -65,7 +65,7 @@ public class ProductController {
         return ResponseEntity.ok(
                 ApiResponse.<Product>builder()
                         .success(true)
-                        .message("Producto actualizado")
+                        .message("Producto actualizado correctamente")
                         .data(product)
                         .build()
         );
@@ -78,7 +78,7 @@ public class ProductController {
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
                         .success(true)
-                        .message("Producto desactivado")
+                        .message("Producto desactivado (Soft Delete)")
                         .build()
         );
     }

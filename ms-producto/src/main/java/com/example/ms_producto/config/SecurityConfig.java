@@ -44,7 +44,7 @@ public class SecurityConfig {
             response.setContentType("application/json");
             ApiResponse<Object> res = ApiResponse.builder()
                     .success(false)
-                    .message("Acceso denegado")
+                    .message("Acceso denegado: permisos insuficientes")
                     .build();
             new ObjectMapper().writeValue(response.getOutputStream(), res);
         };

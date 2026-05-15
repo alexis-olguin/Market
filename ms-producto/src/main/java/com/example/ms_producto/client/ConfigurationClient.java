@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class ConfigurationClient {
 
     public boolean isCategoryActive(Long categoryId, String token) {
         try {
-            ApiResponse<Boolean> response = webClientBuilder.build()
+            ApiResponse response = webClientBuilder.build()
                     .get()
                     .uri(configurationServiceUrl + "/api/categories/" + categoryId + "/active")
                     .header("Authorization", token)
