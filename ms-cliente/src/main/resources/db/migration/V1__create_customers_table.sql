@@ -1,0 +1,9 @@
+CREATE TABLE customers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    document_number VARCHAR(255) NOT NULL UNIQUE,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    points INT NOT NULL DEFAULT 0,
+    active BOOLEAN DEFAULT TRUE
+);
