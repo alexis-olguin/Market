@@ -4,12 +4,6 @@ Este proyecto consiste en una plataforma de gestión para un **Minimarket**, dis
 
 ---
 
-## 1. Integrantes
-* **Alexis Olguín**
-* *(Puedes añadir los nombres de otros integrantes aquí)*
-
----
-
 ## 2. Dominio y Contexto del Proyecto
 El sistema gestiona de manera descentralizada las operaciones esenciales de un negocio de Minimarket:
 * **Autenticación y Seguridad:** Registro, inicio de sesión y gestión de roles y usuarios mediante tokens **JWT** firmados.
