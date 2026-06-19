@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MsGatewayApplication",
+            "request": "launch",
+            "mainClass": "com.example.ms_gateway.MsGatewayApplication",
+            "projectName": "ms-gateway"
+        },
+        {
+            "type": "java",
+            "name": "MsEurekaApplication",
+            "request": "launch",
+            "mainClass": "com.example.ms_eureka.MsEurekaApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
