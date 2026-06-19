@@ -21,7 +21,7 @@ public class InventoryClient {
         try {
             ApiResponse response = webClientBuilder.build()
                     .get()
-                    .uri(inventoryServiceUrl + "/api/inventory/product/" + productId)
+                    .uri(inventoryServiceUrl + "/api/inventario/product/" + productId)
                     .header("Authorization", token)
                     .retrieve()
                     .bodyToMono(ApiResponse.class)
@@ -43,15 +43,11 @@ public class InventoryClient {
         try {
             Map<String, Object> request = Map.of(
                     "quantity", quantity,
-                    "description", "Venta procesada"
-            );
+                    "reason", "Venta procesada");
 
             webClientBuilder.build()
                     .post()
-                    .uri(uriBuilder -> uriBuilder
-                            .path(inventoryServiceUrl + "/api/inventory/movements")
-                            .queryParam("productId", productId)
-                            .build())
+                    .uri(inventoryServiceUrl + "/api/inventario/movements?productId=" + productId)
                     .header("Authorization", token)
                     .bodyValue(request)
                     .retrieve()

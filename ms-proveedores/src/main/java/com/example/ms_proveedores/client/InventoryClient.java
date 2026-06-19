@@ -12,7 +12,7 @@ import java.util.Map;
 public class InventoryClient {
 
     private final WebClient webClient;
-    private final String BASE_URL = "http://localhost:8082/api/inventory/product/";
+    private final String BASE_URL = "http://localhost:8082/api/inventario/product/";
 
     public void aumentarStock(Long productId, Integer quantity, String token) {
         try {

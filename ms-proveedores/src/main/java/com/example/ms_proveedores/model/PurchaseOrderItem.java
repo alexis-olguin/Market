@@ -23,4 +23,9 @@ public class PurchaseOrderItem {
 
     @Column(name = "unit_cost", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitCost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_order_id", nullable = false)
+    @ToString.Exclude
+    private PurchaseOrder purchaseOrder;
 }

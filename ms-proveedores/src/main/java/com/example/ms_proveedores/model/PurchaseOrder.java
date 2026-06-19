@@ -29,7 +29,6 @@ public class PurchaseOrder {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "purchase_order_id")
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrderItem> items;
 }

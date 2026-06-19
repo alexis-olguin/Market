@@ -19,7 +19,7 @@ public class ProductClient {
         try {
             ApiResponse response = webClientBuilder.build()
                     .get()
-                    .uri(productServiceUrl + "/api/products/" + id)
+                    .uri(productServiceUrl + "/api/productos/" + id)
                     .header("Authorization", token)
                     .retrieve()
                     .bodyToMono(ApiResponse.class)

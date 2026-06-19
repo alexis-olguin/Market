@@ -114,7 +114,7 @@ public class InventoryService {
         if (inv.getCurrentStock() <= inv.getMinimumStock()) {
             log.warn("Stock crítico detectado para producto: {}. Actual: {}, Mínimo: {}", inv.getProductId(), inv.getCurrentStock(), inv.getMinimumStock());
             NotificationRequest notifReq = NotificationRequest.builder()
-                    .type("CRITICAL_STOCK")
+                    .type("LOW_STOCK")
                     .message("El producto con ID " + inv.getProductId() + " tiene un stock crítico de " + inv.getCurrentStock())
                     .productId(inv.getProductId())
                     .currentStock(inv.getCurrentStock())
