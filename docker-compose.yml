@@ -1,0 +1,177 @@
+services:
+  mysql-auth:
+    image: mysql:8
+    container_name: mysql-auth
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_auth
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_auth_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-configuracion:
+    image: mysql:8
+    container_name: mysql-configuracion
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_configuracion
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_configuracion_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-producto:
+    image: mysql:8
+    container_name: mysql-producto
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_producto
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_producto_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-cliente:
+    image: mysql:8
+    container_name: mysql-cliente
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_cliente
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_cliente_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  ms-eureka:
+    build: ./ms-eureka
+    container_name: ms-eureka
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    networks:
+      - backend-network
+
+  ms-gateway:
+    build: ./ms-gateway
+    container_name: ms-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+    depends_on:
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-auth:
+    build: ./ms-auth
+    container_name: ms-auth
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      DB_HOST: mysql-auth
+      DB_PORT: 3306
+      DB_NAME: db_auth
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-auth
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-configuracion:
+    build: ./ms-configuración
+    container_name: ms-configuracion
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      DB_HOST: mysql-configuracion
+      DB_PORT: 3306
+      DB_NAME: db_configuracion
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-configuracion
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-producto:
+    build: ./ms-producto
+    container_name: ms-producto
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: mysql-producto
+      DB_PORT: 3306
+      DB_NAME: db_producto
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      CONFIGURATION_SERVICE_URL: http://ms-configuracion:8090
+    depends_on:
+      - mysql-producto
+      - ms-eureka
+      - ms-configuracion
+    networks:
+      - backend-network
+
+  ms-cliente:
+    build: ./ms-cliente
+    container_name: ms-cliente
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    environment:
+      DB_HOST: mysql-cliente
+      DB_PORT: 3306
+      DB_NAME: db_cliente
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-cliente
+      - ms-eureka
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+
+volumes:
+  mysql_auth_data:
+  mysql_configuracion_data:
+  mysql_producto_data:
+  mysql_cliente_data:
