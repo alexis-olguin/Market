@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/inventario")
+@RequestMapping("/api/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
@@ -89,7 +89,7 @@ public class InventoryController {
         );
     }
 
-    @GetMapping("/stock-critico")
+    @GetMapping("/critical-stock")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<InventoryResponse>>> getCriticalStock() {
         return ResponseEntity.ok(

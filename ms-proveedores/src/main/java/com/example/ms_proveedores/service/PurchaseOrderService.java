@@ -70,10 +70,9 @@ public class PurchaseOrderService {
 
         order.setTotal(total);
         order.setItems(items);
-        items.forEach(item -> item.setPurchaseOrder(order));
-        PurchaseOrder savedOrder = orderRepository.save(order);
+        order = orderRepository.save(order);
 
-        return mapToResponse(savedOrder);
+        return mapToResponse(order);
     }
 
     public List<PurchaseOrderResponse> listarOrdenes() {

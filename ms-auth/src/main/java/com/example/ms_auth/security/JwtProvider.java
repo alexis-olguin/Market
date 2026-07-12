@@ -13,7 +13,7 @@ import java.util.Date;
 public class JwtProvider {
 
     private final Key key;
-    private final long expiration = 3600000; // 1 hora
+    private final long expiration = 3600000;
 
     public JwtProvider(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
@@ -25,7 +25,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("role", "ROLE_" + role) // ROLE_ADMIN, ROLE_USER
+                .claim("role", "ROLE_" + role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)

@@ -24,7 +24,7 @@ public class NotificationService {
         Notification notif = new Notification();
         notif.setType(request.getType());
         notif.setMessage(request.getMessage());
-        notif.setStatus("SENT"); // Simulamos que se envió automáticamente
+        notif.setStatus("SENT");
         notif.setCreatedAt(LocalDateTime.now());
 
         notif = repository.save(notif);

@@ -21,7 +21,7 @@ public class PurchaseOrder {
     private Long supplierId;
 
     @Column(nullable = false)
-    private String status; // CREATED, RECEIVED
+    private String status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -29,6 +29,7 @@ public class PurchaseOrder {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "purchase_order_id")
     private List<PurchaseOrderItem> items;
 }

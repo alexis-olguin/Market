@@ -1,6 +1,7 @@
 package com.example.ms_inventario.client;
 
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.example.ms_inventario.dto.NotificationRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class NotificationClient {
     private final WebClient webClient;
-    private final String BASE_URL = "http://localhost:8089/api/notificaciones";
+
+    @Value("${services.notificaciones.url:http://localhost:8089/api/notificaciones}")
+    private String notificacionesUrl;
 
     public void enviarAlertaStockCritico(NotificationRequest request, String token) {
         try {
             webClient.post()
-                    .uri(BASE_URL)
+                    .uri(notificacionesUrl)
                     .header("Authorization", "Bearer " + token)
                     .bodyValue(request)
                     .retrieve()

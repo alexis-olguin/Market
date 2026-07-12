@@ -16,13 +16,13 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private String type; // LOW_STOCK, PROMOTION, SYSTEM
+    private String type;
 
     @Column(nullable = false)
     private String message;
 
     @Column(nullable = false)
-    private String status; // CREATED, SENT
+    private String status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

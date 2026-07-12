@@ -18,7 +18,7 @@ public class InventoryMovement {
     private Long productId;
 
     @Column(name = "movement_type", nullable = false)
-    private String movementType; // IN, OUT
+    private String movementType;
 
     @Column(nullable = false)
     private Integer quantity;
