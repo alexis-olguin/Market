@@ -3,15 +3,18 @@ package com.example.ms_configuracion.repository;
 import com.example.ms_configuracion.model.Tax;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+
 @DataJpaTest
 @ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TaxRepositoryTest {
 
     @Autowired

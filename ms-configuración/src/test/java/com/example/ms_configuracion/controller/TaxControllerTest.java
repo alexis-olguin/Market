@@ -6,8 +6,8 @@ import com.example.ms_configuracion.service.TaxService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +31,9 @@ class TaxControllerTest {
 
     @MockitoBean
     private TaxService service;
+
+    @MockitoBean
+    private com.example.ms_configuracion.security.JwtUtil jwtUtil;
 
     @Test
     void debeListarImpuestos() throws Exception {
@@ -61,8 +64,8 @@ class TaxControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("Impuesto obtenido"))
-                .andExpect(jsonPath("$.data.content.id").value(1))
-                .andExpect(jsonPath("$.data.content.name").value("IGV"));
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.name").value("IGV"));
     }
 
     @Test

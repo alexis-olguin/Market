@@ -6,8 +6,8 @@ import com.example.ms_configuracion.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +30,9 @@ class CategoryControllerTest {
 
     @MockitoBean
     private CategoryService service;
+
+    @MockitoBean
+    private com.example.ms_configuracion.security.JwtUtil jwtUtil;
 
     @Test
     void debeListarCategorias() throws Exception {
@@ -59,8 +62,8 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("Categoría obtenida"))
-                .andExpect(jsonPath("$.data.content.id").value(1))
-                .andExpect(jsonPath("$.data.content.name").value("Bebidas"));
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.name").value("Bebidas"));
     }
 
     @Test
