@@ -4,7 +4,7 @@ echo ====================================================
 echo Compilando microservicios activos de Minimarket...
 echo ====================================================
 
-set SERVICES=ms-eureka ms-gateway ms-auth ms-configuración ms-producto ms-cliente ms-inventario ms-ventas ms-proveedores ms-pagos ms-informes ms-notificaciones
+set SERVICES=ms-eureka ms-gateway ms-auth ms-configuracion ms-producto ms-cliente ms-inventario ms-ventas ms-proveedores ms-pagos ms-informes ms-notificaciones
 
 for %%s in (%SERVICES%) do (
     if exist "%%s" (
