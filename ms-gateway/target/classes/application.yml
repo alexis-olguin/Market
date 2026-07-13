@@ -34,6 +34,31 @@ spring:
               uri: lb://ms-cliente
               predicates:
                 - Path=/api/customers/**
+            - id: ms-inventario
+              uri: lb://ms-inventario
+              predicates:
+                - Path=/api/inventario/**
+            - id: ms-ventas
+              uri: lb://ms-ventas
+              predicates:
+                - Path=/api/sales/**
+            - id: ms-proveedores
+              uri: lb://ms-proveedores
+              predicates:
+                - Path=/api/suppliers/**
+                - Path=/api/purchase-orders/**
+            - id: ms-pagos
+              uri: lb://ms-pagos
+              predicates:
+                - Path=/api/payments/**
+            - id: ms-informes
+              uri: lb://ms-informes
+              predicates:
+                - Path=/api/reports/**
+            - id: ms-notificaciones
+              uri: lb://ms-notificaciones
+              predicates:
+                - Path=/api/notificaciones/**
 server:
   port: ${PORT:8080}
 eureka:

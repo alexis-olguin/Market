@@ -78,19 +78,47 @@ La documentación interactiva se puede consultar directamente en el puerto local
 
 ## 6. Instrucciones de Ejecución
 
-### A. Ejecución Local (desde el IDE o terminal)
-1. Levanta el servidor de descubrimiento **ms-eureka**.
-2. Arranca los microservicios de negocio que desees probar (ej. **ms-auth**, **ms-producto**, etc.).
-3. Levanta el API Gateway **ms-gateway**.
-4. *(Opcional)* Si deseas levantar los servicios base y sus bases de datos en contenedores locales, puedes ejecutar:
-   ```bash
-   docker compose up --build
-   ```
+### A. Compilación Obligatoria (Antes de usar Docker)
+Dado que los archivos compilados `.jar` están en la carpeta `target/` (la cual está excluida de Git en el archivo `.gitignore`), **debes compilar los microservicios** antes de poder construir sus imágenes Docker. 
 
-### B. Ejecución Remota (Despliegue Cloud en Railway / Render)
+Hemos provisto un script automatizado en la raíz para facilitar esto en Windows:
+* **En Windows (CMD/PowerShell):** Haz doble click o ejecuta `build_all.bat` en tu terminal.
+
+*(En macOS/Linux, puedes ejecutar `./mvnw clean package -DskipTests` en la carpeta de cada microservicio activo).*
+
+El script `build_all.bat` compilará recursivamente los 6 microservicios activos y generará sus respectivos archivos `.jar`.
+
+---
+
+### B. Ejecución con Docker Compose
+Una vez finalizada la compilación, puedes levantar todo el ecosistema (los 6 microservicios y sus respectivas 4 bases de datos MySQL) con un solo comando:
+```bash
+docker compose up --build
+```
+
+> [!WARNING]
+> **Resolución de Errores Comunes al Levantar Docker:**
+> 1. **Error: `COPY failed: no source files were specified`:** Esto ocurre si intentas levantar Docker sin haber ejecutado la compilación previa (`build_all.bat`).
+> 2. **Error: `port already in use (8080 o 8761)`:** Si el puerto `8080` (Gateway) o `8761` (Eureka) está ocupado por otra aplicación local (como Tomcat, Jenkins, Oracle XE, etc.), Docker fallará. Debes detener el servicio que ocupa ese puerto en tu máquina antes de levantar el docker-compose.
+> 3. **Error: `port already in use (3307 al 3310)`:** Si tienes contenedores MySQL previos corriendo en los mismos puertos asignados para el host, detenlos primero con `docker stop $(docker ps -aq)` o cambia los puertos en `docker-compose.yml`.
+
+---
+
+### C. Ejecución Local (desde el IDE sin Docker)
+Si deseas levantar los servicios manualmente desde IntelliJ IDEA o VS Code:
+1. Levanta el servidor de descubrimiento **ms-eureka** (Puerto 8761).
+2. Arranca las bases de datos de forma local en tu máquina.
+3. Configura las variables de entorno de base de datos en tu IDE.
+4. Arranca los microservicios de negocio (`ms-auth`, `ms-configuración`, `ms-producto`, `ms-cliente`).
+5. Levanta el API Gateway **ms-gateway** (Puerto 8080).
+
+---
+
+### D. Ejecución Remota (Despliegue Cloud en Railway / Render)
 1. Sube este repositorio monorepo a tu cuenta de GitHub.
 2. En la plataforma PaaS, crea un servicio web por cada microservicio apuntando al directorio raíz de cada uno (Root Directory).
 3. Levanta las bases de datos MySQL requeridas e inyecta sus credenciales mediante variables de entorno (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`).
 4. Inyecta la variable `EUREKA_URL` en todos los servicios apuntando a la URL pública de tu Eureka en la nube:
    `EUREKA_URL=https://tu-eureka-cloud.up.railway.app/eureka/`
 5. Asegúrate de configurar el mismo `JWT_SECRET` en todos los servicios que requieran autenticación.
+

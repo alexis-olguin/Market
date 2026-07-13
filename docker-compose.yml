@@ -1,97 +1,426 @@
 services:
-  discovery-server:
-    build: ./discovery-server
+  mysql-auth:
+    image: mysql:8
+    container_name: mysql-auth
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_auth
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_auth_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-configuracion:
+    image: mysql:8
+    container_name: mysql-configuracion
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_configuracion
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_configuracion_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-producto:
+    image: mysql:8
+    container_name: mysql-producto
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_producto
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_producto_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-cliente:
+    image: mysql:8
+    container_name: mysql-cliente
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_cliente
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_cliente_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-inventario:
+    image: mysql:8
+    container_name: mysql-inventario
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_inventario
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql_inventario_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-ventas:
+    image: mysql:8
+    container_name: mysql-ventas
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_ventas
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3312:3306"
+    volumes:
+      - mysql_ventas_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-proveedores:
+    image: mysql:8
+    container_name: mysql-proveedores
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_proveedores
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3313:3306"
+    volumes:
+      - mysql_proveedores_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-pagos:
+    image: mysql:8
+    container_name: mysql-pagos
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_pagos
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3314:3306"
+    volumes:
+      - mysql_pagos_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-informes:
+    image: mysql:8
+    container_name: mysql-informes
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_informes
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3315:3306"
+    volumes:
+      - mysql_informes_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  mysql-notificaciones:
+    image: mysql:8
+    container_name: mysql-notificaciones
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_notificaciones
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3316:3306"
+    volumes:
+      - mysql_notificaciones_data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  ms-eureka:
+    build: ./ms-eureka
+    container_name: ms-eureka
+    restart: unless-stopped
     ports:
       - "8761:8761"
+    networks:
+      - backend-network
 
-  api-gateway:
-    build: ./api-gateway
-    depends_on:
-      discovery-server:
-        condition: service_started
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+  ms-gateway:
+    build: ./ms-gateway
+    container_name: ms-gateway
+    restart: unless-stopped
     ports:
       - "8080:8080"
-
-  mysql:
-    image: mysql:8.4
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    ports:
-      - "3306:3306"
-    volumes:
-      - minimarket_mysql:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - ms-eureka
+    networks:
+      - backend-network
 
   ms-auth:
     build: ./ms-auth
-    depends_on:
-      discovery-server:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_auth
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ""
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    container_name: ms-auth
+    restart: unless-stopped
     ports:
       - "8084:8084"
+    environment:
+      DB_HOST: mysql-auth
+      DB_PORT: 3306
+      DB_NAME: db_auth
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-auth
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-configuracion:
+    build: ./ms-configuración
+    container_name: ms-configuracion
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      DB_HOST: mysql-configuracion
+      DB_PORT: 3306
+      DB_NAME: db_configuracion
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-configuracion
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-producto:
+    build: ./ms-producto
+    container_name: ms-producto
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: mysql-producto
+      DB_PORT: 3306
+      DB_NAME: db_producto
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+      CONFIGURATION_SERVICE_URL: http://ms-configuracion:8090
+    depends_on:
+      - mysql-producto
+      - ms-eureka
+      - ms-configuracion
+    networks:
+      - backend-network
+
+  ms-cliente:
+    build: ./ms-cliente
+    container_name: ms-cliente
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    environment:
+      DB_HOST: mysql-cliente
+      DB_PORT: 3306
+      DB_NAME: db_cliente
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-cliente
+      - ms-eureka
+    networks:
+      - backend-network
 
   ms-inventario:
     build: ./ms-inventario
-    depends_on:
-      discovery-server:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_inventario
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ""
-      MS_PRODUCTOS_URL: http://ms-producto:8081/api/productos
-      MS_NOTIFICACIONES_URL: http://ms-notificaciones:8089/api/notificaciones
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    container_name: ms-inventario
+    restart: unless-stopped
     ports:
       - "8086:8086"
+    environment:
+      DB_HOST: mysql-inventario
+      DB_PORT: 3306
+      DB_NAME: db_inventario
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+      MS_PRODUCTOS_URL: http://ms-producto:8081/api/productos
+      MS_NOTIFICACIONES_URL: http://ms-notificaciones:8089/api/notificaciones
+    depends_on:
+      - mysql-inventario
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-ventas:
+    build: ./ms-ventas
+    container_name: ms-ventas
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      DB_HOST: mysql-ventas
+      DB_PORT: 3306
+      DB_NAME: db_ventas
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+      PRODUCT_SERVICE_URL: http://ms-producto:8081
+      INVENTORY_SERVICE_URL: http://ms-inventario:8086
+      PAYMENT_SERVICE_URL: http://ms-pagos:8091
+      CUSTOMER_SERVICE_URL: http://ms-cliente:8085
+    depends_on:
+      - mysql-ventas
+      - ms-eureka
+      - ms-producto
+      - ms-inventario
+      - ms-pagos
+      - ms-cliente
+    networks:
+      - backend-network
 
   ms-proveedores:
     build: ./ms-proveedores
-    depends_on:
-      discovery-server:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_proveedores
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ""
-      MS_PRODUCTOS_URL: http://ms-producto:8081/api/productos
-      MS_INVENTARIO_URL: http://ms-inventario:8086/api/inventory/product
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    container_name: ms-proveedores
+    restart: unless-stopped
     ports:
       - "8087:8087"
+    environment:
+      DB_HOST: mysql-proveedores
+      DB_PORT: 3306
+      DB_NAME: db_proveedores
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+      MS_PRODUCTOS_URL: http://ms-producto:8081/api/productos
+      MS_INVENTARIO_URL: http://ms-inventario:8086/api/inventory/product
+    depends_on:
+      - mysql-proveedores
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-pagos:
+    build: ./ms-pagos
+    container_name: ms-pagos
+    restart: unless-stopped
+    ports:
+      - "8091:8091"
+    environment:
+      DB_HOST: mysql-pagos
+      DB_PORT: 3306
+      DB_NAME: db_pagos
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-pagos
+      - ms-eureka
+    networks:
+      - backend-network
+
+  ms-informes:
+    build: ./ms-informes
+    container_name: ms-informes
+    restart: unless-stopped
+    ports:
+      - "8088:8088"
+    environment:
+      DB_HOST: mysql-informes
+      DB_PORT: 3306
+      DB_NAME: db_informes
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+      SALE_SERVICE_URL: http://ms-ventas:8083
+      INVENTORY_SERVICE_URL: http://ms-inventario:8086
+    depends_on:
+      - mysql-informes
+      - ms-eureka
+      - ms-ventas
+      - ms-inventario
+    networks:
+      - backend-network
 
   ms-notificaciones:
     build: ./ms-notificaciones
-    depends_on:
-      discovery-server:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_notificaciones
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ""
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    container_name: ms-notificaciones
+    restart: unless-stopped
     ports:
       - "8089:8089"
+    environment:
+      DB_HOST: mysql-notificaciones
+      DB_PORT: 3306
+      DB_NAME: db_notificaciones
+      DB_USER: appuser
+      DB_PASSWORD: 1234
+      JWT_SECRET: clave_super_secreta_12345678901234562026
+      EUREKA_URL: http://ms-eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka:8761/eureka/
+    depends_on:
+      - mysql-notificaciones
+      - ms-eureka
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
 
 volumes:
-  minimarket_mysql:
+  mysql_auth_data:
+  mysql_configuracion_data:
+  mysql_producto_data:
+  mysql_cliente_data:
+  mysql_inventario_data:
+  mysql_ventas_data:
+  mysql_proveedores_data:
+  mysql_pagos_data:
+  mysql_informes_data:
+  mysql_notificaciones_data:
