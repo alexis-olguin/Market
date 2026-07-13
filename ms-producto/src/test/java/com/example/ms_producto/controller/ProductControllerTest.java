@@ -6,8 +6,8 @@ import com.example.ms_producto.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +32,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private ProductService service;
+
+    @MockitoBean
+    private com.example.ms_producto.security.JwtUtil jwtUtil;
 
     @Test
     void debeListarProductos() throws Exception {
@@ -62,8 +65,8 @@ class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("Producto encontrado"))
-                .andExpect(jsonPath("$.data.content.id").value(1))
-                .andExpect(jsonPath("$.data.content.name").value("Leche"));
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.name").value("Leche"));
     }
 
     @Test

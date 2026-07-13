@@ -6,8 +6,8 @@ import com.example.ms_cliente.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class CustomerControllerTest {
+public class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,8 +32,11 @@ class CustomerControllerTest {
     @MockitoBean
     private CustomerService service;
 
+    @MockitoBean
+    private com.example.ms_cliente.security.JwtUtil jwtUtil;
+
     @Test
-    void debeListarClientes() throws Exception {
+    public void debeListarClientes() throws Exception {
         List<Customer> clientes = List.of(
                 new Customer(1L, "12345678", "Juan Perez", "juan@gmail.com", "987654321", 0, true)
         );
@@ -49,7 +52,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void debeObtenerClientePorId() throws Exception {
+    public void debeObtenerClientePorId() throws Exception {
         Customer customer = new Customer(1L, "12345678", "Juan Perez", "juan@gmail.com", "987654321", 0, true);
 
         when(service.obtener(1L)).thenReturn(customer);
@@ -60,12 +63,12 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("Cliente encontrado"))
-                .andExpect(jsonPath("$.data.content.id").value(1))
-                .andExpect(jsonPath("$.data.content.fullName").value("Juan Perez"));
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.fullName").value("Juan Perez"));
     }
 
     @Test
-    void debeRegistrarCliente() throws Exception {
+    public void debeRegistrarCliente() throws Exception {
         CustomerDTO dto = new CustomerDTO();
         dto.setDocumentNumber("12345678");
         dto.setFullName("Juan Perez");
@@ -88,7 +91,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void debeActualizarCliente() throws Exception {
+    public void debeActualizarCliente() throws Exception {
         CustomerDTO dto = new CustomerDTO();
         dto.setDocumentNumber("12345678");
         dto.setFullName("Juan Perez Actualizado");
@@ -110,7 +113,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void debeDesactivarCliente() throws Exception {
+    public void debeDesactivarCliente() throws Exception {
         doNothing().when(service).desactivar(1L);
 
         mockMvc.perform(delete("/api/customers/1"))
