@@ -204,7 +204,7 @@ services:
       - backend-network
 
   ms-configuracion:
-    build: ./ms-configuración
+    build: ./ms-configuracion
     container_name: ms-configuracion
     restart: unless-stopped
     ports:

@@ -13,7 +13,7 @@
     <modules>
         <module>ms-auth</module>
         <module>ms-cliente</module>
-        <module>ms-configuración</module>
+        <module>ms-configuracion</module>
         <module>ms-eureka</module>
         <module>ms-gateway</module>
         <module>ms-informes</module>
