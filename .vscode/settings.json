@@ -1,5 +1,13 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.test.config": {
+        "workingDirectory": "${workspaceFolder}"
+    },
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "maven.executable.preferMavenWrapper": true,
+    "java.test.defaultConfig": ""
 }

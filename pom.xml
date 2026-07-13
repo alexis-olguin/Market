@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>market-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Market Minimarket Parent</name>
+    <description>Aggregator POM for Minimarket microservices</description>
+
+    <modules>
+        <module>ms-auth</module>
+        <module>ms-cliente</module>
+        <module>ms-configuración</module>
+        <module>ms-eureka</module>
+        <module>ms-gateway</module>
+        <module>ms-informes</module>
+        <module>ms-inventario</module>
+        <module>ms-notificaciones</module>
+        <module>ms-pagos</module>
+        <module>ms-producto</module>
+        <module>ms-proveedores</module>
+        <module>ms-ventas</module>
+    </modules>
+</project>
